@@ -11,20 +11,16 @@
 
 ## Framing
 
-<!-- TODO: add framing - code off?  -->
+Today we are transitioning into a new unit, as we begin to focus on building out bigger and bigger applications. As our applications grows in size and complexity, it can become increasingly difficult to manage all of our data, rendering logic, and view code from a code maintainability perspective without some sort of structure or guidelines. Luckily, the field of web development is evolving to rapidly produce solutions to this problem, and today we will look at one particular solution - Angular.js
 
 <details>
 <summary>**Q**: What is a Front End Framework?</summary>
 
-> a library that attempts to move some or all application logic to the browser, while providing a simple interface for keeping the front-end in sync with the back-end
-
-> applications can run completely in the browser, minimizing server load since the server is only accessed when the front end needs to synchronize data with the backend
-
-> server sends over the app in the initial request (HTML/CSS/JS) then JS makes all subsequent requests with AJAX
-
-> provides more fluid user experience
-
-> loads everything from the database on page load (data and templates) then renders/updates the page content based on user interaction.
+- a library that attempts to move some or all application logic to the browser, while providing a simple interface for keeping the front-end in sync with the back-end
+- applications can run completely in the browser, minimizing server load since the server is only accessed when the front end needs to synchronize data with the backend
+- server sends over the app in the initial request (HTML/CSS/JS) then JS makes all subsequent requests with AJAX
+- provides more fluid user experience
+- loads everything from the database on page load (data and templates) then renders/updates the page content based on user interaction.
 
 </details>
 
@@ -141,6 +137,22 @@ In Angular, any Javascript that we want to execute and print to the screen can b
 
 For example, adding `{{5 + 5}} ` to the `body` of our `index.html` file, would print `10` to the screen.
 
+## You Do: Setup Grumblr Application (5 mins)
+
+For the rest of this morning, you will be working on building Grumblr, a one-model application that will allow users to post their `grumbles`.
+
+To start:
+- Create a directory called `grumblr`
+- Inside that directory, create two files - a `html` file, and a `js` file
+- Add some boilerplate `html` and make sure to link to your `js` file and the **Angular CDN**
+- Create and store to a variable, an array of hard-coded data that contains at least 5 objects with the following properties:
+  - `title`
+  - `author`
+  - `content`
+  - `photo_url`
+- Define you application's initial module and use a directive to bootstrap your Angular application
+- Use Angular Expressions to get the product of `5 x 5` to display in the browser
+
 ## [Angular Controllers](https://docs.angularjs.org/guide/controller) (10/80)
 
 Great, so we now have a way to write javascript in our `html`, now we just have to figure out how to render those todos we defined earlier!
@@ -197,23 +209,6 @@ Let's add some code inside the `body` to display a single todo:
 
 Now, when we open our `index.html` file in the browser, we can see our data rendered in the browser!
 
-### Setup & Add Controller and Seed Data in Controller - You Do - Grumblr (20/100)
-
-- Set up the `grumblr` application as an angular application.
-- Create an Angular application in the main js file
-- Create an angular controller
-- That angular controller will have a property that is an array that contains 5 objects with the following properties:
-  - title
-  - author name
-  - content
-  - photo url
-
----
-## Break (10 mins)
----
-
-<!-- TODO: add you do -->
-
 ## `ng-repeat`
 
 Where we left off, we could only render one todo at a time. We could continue this pattern and hard code each todo out, but as you might have guessed, there is a better way that will allow us to iterate over every todo in our data to generate duplicative UI.
@@ -235,13 +230,15 @@ In `index.html`:
 
 Now, when we refresh in the browser we see each of our todos with their respective data and markup displaying.
 
-## `ng-repeat` - You Do - Grumblr (20/35)
-- Display all of the hardcoded grumbles on to the screen using `ng-repeat`
-- Make sure that you display all of the information for each grumble(title, author name, content, photo url)
-- make sure each grumble has a toggleable edit form.
+## `ng-repeat` - You Do - Grumblr (10 mins)
+
+- Define a new controller attached to your app's module
+- Attach a property to your controller called `grumbles` which is equal to all of your hard-coded data
+- In the view, initialize an instance of your controller as the view model
+- Use a directive to display all of the information for each `grumble` (title, name, content, photo url)
 
 ---
-## Break (5 mins)
+## Break (10 mins)
 ---
 
 ## User Input and Data Binding
@@ -312,33 +309,46 @@ Next up, let's focus on capturing whatever the user entered, and then adding tha
 
 ### [`ng-model`](https://docs.angularjs.org/api/ng/directive/ngModel)
 
-<!-- TODO: capture user input  -->
+Now, our goal is to access whatever the user entered into the form in our controller. To start, we need a way of talking about the data that the user entered. Angular allows us to bind the data entered into the input as a variable.
 
-We can utilize the view model in a variety of ways. We'll be using view model to leverage the angular directive `ng-model` to retrieve and set data. We can actually just create properties on the view model to serve this end.
+The cool thing about this, is that this variable will update on every change of input - in real time! This is one of Angular's core selling points, and is known as **two-way data binding**.
 
-### Example of 2-way Data Binding
+Let's see what happens when we track the user's input to a variable, and then display that variable.
 
-> you can update the view from the model, and the model with the view.
+In `index.html`:
 
-We can see all of our todos, we can even toggle forms to create new ones and edit existing ones. Theres just one problem. We can't actually create or edit todos yet. We need a way to access the values of the input elements and call a function to create the Todo in the form. We'll be using `ng-model` and `ng-submit` to do these things. Let's get the functionality working for creating Todos. In `index.html`:
+```html
+<div>
+  <input type="text" ng-model="vm.newTodo">
+  <button ng-click="vm.addTodo()">Add Todo</button>
+  <p>User input: {{vm.newTodo}}</p>
+</div>
+```
+> Here we added an `ng-model` to our input tag with a value of a `newTodo` property we are attaching to our `vm`.
 
+Now, when we refresh in the browser, we can see the data we enter into the input displayed in realtime.
 
-> We added an angular directive to execute a function when the form is submitted `.create` (we haven't defined this method yet). Additionally, we added an `ng-model` to our input tag with a value of the `content` property of our `vm`. When we submit the form, the value contained in the input box will be stored as a property of the `vm`.
+Furthermore, in this example we bound the user's input to a property we are calling `newTodo` on our the `vm`. Why this is important is that because of Angular's two-way data binding, any property attached to the VM in the view, is also available as a property inside the controller. This means that we are now all set up and ready to complete our `addTodo` method in the controller.
 
-Let's define our `.create` function in the controller now. In `app/todos/todos.controller.js`:
+Moving back to our `addTodo` method in the controller, we need to grab the user input, and create a new todo from that data.
+
+Let's look at the code that makes this a reality:
 
 ```js
-this.create = function(){
-  this.todos.unshift(this.content);
+this.addTodo = function(){
+  let todo = {name: this.newTodo, completed: false }
+  this.todos.push(todo)
 };
 ```
 
-> unshift is just like push, only it adds the argument as the first element of the array instead of the last.
+Here we have access to the todo the user entered via a property on a controller of the same name that we used in the view (`this.newTodo`), we use that data to create a new todo, then add it to our collection.
 
-## `ng-model` & `createGrumble` - You Do (20/100)
+## You Do: Add a New Grumble
 
-Add the create same functionality we just did for todo's for your Grumblr application.
-* **NOTE:** we're not just saving a single property this time.
+- Create some UI for the user to enter in information about a new Grumble (i.e. inputs for `title`, `author`, `content`, and `photo_url`, as well as a button to submit)
+- Wire up your form's button to a method defined in controller
+- Bind each input to a property attached on the view model
+- When the user clicks submit, inside your method in the controller - use the user data to create a new `grumble` and add it to your collection of `grumbles`.
 
 ## Bonus: Conditional Rendering
 
@@ -380,7 +390,8 @@ In `index.html`:
   </div>
 </body>
 ```
-
 > **Note**: the `|` operator starts a filter - which needs a key value pair of how to filter/sort. Note, here we are passing an object as the value specifying that we want to filter by the `completed` property of a `todo` as `false`
 
-<!-- TODO: add you-do -->
+### You Do: Filters in Grumblr
+
+Implement a search functionality for your Grumblr application so that a user can enter in some input, and your collection of `grumbles` is filtered based on user input
